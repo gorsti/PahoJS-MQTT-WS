@@ -1,0 +1,47 @@
+<html>
+<head>
+  <script src="js/vendor/mqttws31.js"></script>
+  <script>
+//    client = new Messaging.Client(location.hostname, Number(location.port), "clientId");
+//    var clientId = window.clientInformation.userAgent;
+//    client = new Messaging.Client(location.hostname, Number(1883), "clientId");
+    var mqttHost = 'localhost';
+    client = new Messaging.Client(mqttHost, Number(3000), "clientId");
+    client.onConnectionLost = onConnectionLost;
+    client.onMessageArrived = onMessageArrived;
+    client.sendMessage = sendMessage;
+    client.connect({onSuccess:onConnect});
+
+    function onConnect() {
+      // Once a connection has been made, make a subscription and send a message.
+      console.log("onConnect");
+      client.subscribe("/BlastOff");
+      client.sendMessage();
+    };
+    function onConnectionLost(responseObject) {
+      if (responseObject.errorCode !== 0)
+        console.log("onConnectionLost:"+responseObject.errorMessage);
+    };
+    function onMessageArrived(message) {
+      console.log("onMessageArrived:"+message.payloadString);
+//      client.disconnect(); 
+    };
+    function sendMessage(message) {
+      var numberOfTimes = 100;
+      for (var i = numberOfTimes - 1; i >= 0; i -= 1) {  
+        message = new Messaging.Message("Countdown" + ' ' + i);
+        message.destinationName = "/BlastOff";
+        client.send(message);
+      };
+    };
+
+  </script>
+
+</head>
+
+
+<body>
+<h1>This is a MQTT over WebSocket test client</h1>
+Open the JavaScript console - I was too lazy to write to the DOM for this test...
+</body>
+</html>
