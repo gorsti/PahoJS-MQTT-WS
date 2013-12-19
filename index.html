@@ -3,10 +3,13 @@
   <script src="js/vendor/mqttws31.js"></script>
   <script>
 //    client = new Messaging.Client(location.hostname, Number(location.port), "clientId");
-//    var clientId = window.clientInformation.userAgent;
 //    client = new Messaging.Client(location.hostname, Number(1883), "clientId");
+    var client;
+    var randomNum = Math.round(Math.random()*Math.pow(10,5));
+    var captureTime = new Date().getTime();
+    var clientIdentity = randomNum.toString()+ "-" + captureTime.toString();
     var mqttHost = 'localhost';
-    client = new Messaging.Client(mqttHost, Number(3000), "clientId");
+    client = new Messaging.Client(mqttHost, Number(3000), clientIdentity);
     client.onConnectionLost = onConnectionLost;
     client.onMessageArrived = onMessageArrived;
     client.sendMessage = sendMessage;
